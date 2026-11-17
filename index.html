@@ -645,33 +645,71 @@ function createFilters(containerId, options, selected, callback) {
 
 function renderFilters() {
 
-  function renderFilters() {
+  const statusBox = document.getElementById("statusFilters");
+  const seriesSection = document.getElementById("seriesSection");
+  const seriesBox = document.getElementById("seriesFilters");
 
-  const statusContainer =
-    document.getElementById("statusFilters");
+  statusBox.innerHTML = "";
+  seriesBox.innerHTML = "";
 
-  statusContainer.innerHTML = "";
-
-  const statusOptions = {
+  const statuses = {
     all: "全部商品",
     instock: "⚡ 現貨專區",
     preorder: "🛍️ 預購開團"
   };
 
-  Object.entries(statusOptions).forEach(([key, label]) => {
+  Object.entries(statuses).forEach(([key, label]) => {
 
-        const button = document.createElement("button");
+    const button = document.createElement("button");
 
-    button.className = "filter-option";
+    button.className =
+      "filter-option" + (currentStatus === key ? " active" : "");
+
     button.textContent = label;
 
-    if (selected === key) {
-      button.classList.add("active");
-    }
+    button.onclick = () => {
+      currentStatus = key;
+      currentSeries = "all";
 
-    button.onclick = () => callback(key);
+      renderFilters();
+      renderProducts();
 
-    container.appendChild(button);
+      if (key === "all") toggleDrawer(false);
+    };
+
+    statusBox.appendChild(button);
+  });
+
+  seriesSection.hidden = currentStatus === "all";
+  seriesSection.style.display =
+    currentStatus === "all" ? "none" : "block";
+
+  if (currentStatus === "all") return;
+
+  const seriesOptions = {
+    all: "全部系列",
+    "selfridges-gold": "冬日金黃系列",
+    "jp-disney-white": "日本迪士尼白色冬季新品"
+  };
+
+  Object.entries(seriesOptions).forEach(([key, label]) => {
+
+    const button = document.createElement("button");
+
+    button.className =
+      "filter-option" + (currentSeries === key ? " active" : "");
+
+    button.textContent = label;
+
+    button.onclick = () => {
+      currentSeries = key;
+
+      renderFilters();
+      renderProducts();
+      toggleDrawer(false);
+    };
+
+    seriesBox.appendChild(button);
   });
 }
 
