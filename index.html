@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>oh.maygot_uk | 英國代購商品目錄</title>
+  <style>
+    :root {
+      --primary-color: #d4a373;
+      --bg-color: #faf8f5;
+      --card-bg: #ffffff;
+      --text-main: #333333;
+      --text-muted: #777777;
+      --tag-instock: #2a9d8f;
+      --tag-preorder: #e76f51;
+      --line-green: #06c755;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding-bottom: 50px;
+    }
+
+    header {
+      background-color: var(--card-bg);
+      text-align: center;
+      padding: 32px 16px 24px;
+      border-bottom: 1px solid #eee;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 20px 16px;
+      position: sticky;
+      top: 0;
+      background-color: rgba(250, 248, 245, 0.95);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+    }
+
+    .filter-btn {
+      padding: 8px 18px;
+      border: 1px solid #ddd;
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background-color: var(--text-main);
+      color: #fff;
+      border-color: var(--text-main);
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .product-img-box {
+      position: relative;
+      width: 100%;
+      padding-top: 100%; /* 1:1 正方形圖片比例 */
+      background-color: #f0ece6;
+    }
+
+    .product-img-box img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .badge.preorder {
+      background-color: var(--tag-preorder);
+    }
+
+    .badge.instock {
+      background-color: var(--tag-instock);
+    }
+
+    .product-info {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .product-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .product-note {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .product-price {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: var(--text-main);
+      margin-top: auto;
+      margin-bottom: 14px;
+    }
+
+    .line-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background-color: var(--line-green);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 0;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .line-btn:hover {
+      opacity: 0.9;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>oh.maygot_uk</h1>
+    <p>英國選物代購 ｜ 現貨與預購商品目錄</p>
+  </header>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">全部商品</button>
+    <button class="filter-btn" onclick="filterProducts('instock', this)">⚡ 現貨專區</button>
+    <button class="filter-btn" onclick="filterProducts('preorder', this)">🛍️ 預購開團</button>
+  </div>
+
+  <div class="container">
+    <div class="product-grid" id="product-list">
+
+      <!-- 商品 1：預購商品範例 -->
+      <div class="product-card" data-status="preorder">
+        <div class="product-img-box">
+          <span class="badge preorder">預購開團</span>
+          <!-- 請將下方 src 換成你的圖片檔名，例如 winnie.jpg -->
+          <img src="winnie.jpg" alt="Selfridges限定-金黃冬日維尼" onerror="this.src='https://placehold.co'">
+        </div>
+        <div class="product-info">
+          <div class="product-title">Selfridges限定-金黃冬日維尼</div>
+          <div class="product-note">英國百貨限定款・預計到貨約2-3週</div>
+          <div class="product-price">NT$ 2,600</div>
+          <a class="line-btn" href="https://line.me" target="_blank">
+            點我 LINE 喊單
+          </a>
+        </div>
+      </div>
+
+      <!-- 商品 2：現貨商品範例（日後要新增商品，複製這個區塊即可） -->
+      <div class="product-card" data-status="instock">
+        <div class="product-img-box">
+          <span class="badge instock">現貨供應</span>
+          <img src="sample_instock.jpg" alt="現貨範例商品" onerror="this.src='https://placehold.co'">
+        </div>
+        <div class="product-info">
+          <div class="product-title">（範例）英國限定現貨商品</div>
+          <div class="product-note">在台現貨・下單後 48 小時內寄出</div>
+          <div class="product-price">NT$ 1,280</div>
+          <a class="line-btn" href="https://line.me" target="_blank">
+            點我 LINE 喊單
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>© oh.maygot_uk ｜ 官方 LINE：@029ieror</p>
+  </footer>
+
+  <script>
+    function filterProducts(category, btnElement) {
+      // 切換按鈕樣式
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      // 篩選商品卡片
+      const cards = document.querySelectorAll('.product-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-status') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
