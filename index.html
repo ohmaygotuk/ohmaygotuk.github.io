@@ -78,6 +78,7 @@
       margin-bottom: 20px;
     }
 
+    /* 第一層：主分類按鈕 */
     .filter-bar {
       display: flex;
       justify-content: center;
@@ -102,22 +103,39 @@
       border-color: var(--text-main);
     }
 
-    .sub-filter-bar {
+    /* 預購雙排子分類容器 */
+    .preorder-filters-wrapper {
       display: none;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
       margin-top: 12px;
       padding-top: 12px;
       border-top: 1px dashed #e0dcd5;
     }
 
-    .sub-filter-bar.show {
+    .preorder-filters-wrapper.show {
       display: flex !important;
     }
 
-    .sub-filter-btn {
-      padding: 6px 14px;
+    .sub-filter-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .row-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-right: 2px;
+    }
+
+    /* 第一排子按鈕樣式（主題系列 - 暖橘色系） */
+    .sub-btn-series {
+      padding: 5px 13px;
       border: 1px solid #e76f51;
       background-color: #fff;
       color: #e76f51;
@@ -127,8 +145,25 @@
       transition: all 0.2s;
     }
 
-    .sub-filter-btn.active {
+    .sub-btn-series.active {
       background-color: #e76f51;
+      color: #fff;
+    }
+
+    /* 第二排子按鈕樣式（商品類型 - 奶茶棕色系） */
+    .sub-btn-type {
+      padding: 5px 13px;
+      border: 1px solid #b08968;
+      background-color: #fff;
+      color: #8d6e63;
+      border-radius: 16px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sub-btn-type.active {
+      background-color: #8d6e63;
       color: #fff;
     }
 
@@ -153,7 +188,6 @@
       flex-direction: column;
     }
 
-    /* 原生橫向滑動相簿（不依賴複雜程式，手機滑動最順暢） */
     .product-img-box {
       position: relative;
       width: 100%;
@@ -173,11 +207,11 @@
       scroll-snap-type: x mandatory;
       scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Firefox 隱藏捲軸 */
+      scrollbar-width: none;
     }
 
     .carousel-track::-webkit-scrollbar {
-      display: none; /* Chrome/Safari 隱藏捲軸 */
+      display: none;
     }
 
     .carousel-track img {
@@ -326,24 +360,41 @@
   </header>
 
   <div class="sticky-nav">
+    <!-- 主分類按鈕 -->
     <div class="filter-bar">
       <button type="button" class="filter-btn active" onclick="filterMain('all', this)">全部商品</button>
       <button type="button" class="filter-btn" onclick="filterMain('instock', this)">⚡ 現貨專區</button>
       <button type="button" class="filter-btn" onclick="filterMain('preorder', this)">🛍️ 預購開團</button>
     </div>
 
-    <div class="sub-filter-bar" id="preorder-sub-bar">
-      <button type="button" class="sub-filter-btn active" onclick="filterSub('all', this)">全部預購</button>
-      <button type="button" class="sub-filter-btn" onclick="filterSub('selfridges-gold', this)">DisneyXSelfridge冬日金黃系列</button>
-      <button type="button" class="sub-filter-btn" onclick="filterSub('jp-disney-white', this)">日本迪士尼白色冬季新品-居家日用品</button>
+    <!-- 點選「預購開團」後展開的雙排分類按鈕 -->
+    <div class="preorder-filters-wrapper" id="preorder-filters">
+      
+      <!-- 第一排：主題系列分類 -->
+      <div class="sub-filter-row">
+        <span class="row-label">系列：</span>
+        <button type="button" class="sub-btn-series active" onclick="setSeries('all', this)">全部系列</button>
+        <button type="button" class="sub-btn-series" onclick="setSeries('selfridges-gold', this)">DisneyXSelfridge冬日金黃系列</button>
+        <button type="button" class="sub-btn-series" onclick="setSeries('jp-disney-white', this)">日本迪士尼白色冬季新品-居家日用品</button>
+      </div>
+
+      <!-- 第二排：商品類別分類（可自行修改或增加按鈕） -->
+      <div class="sub-filter-row">
+        <span class="row-label">類別：</span>
+        <button type="button" class="sub-btn-type active" onclick="setType('all', this)">全部類別</button>
+        <button type="button" class="sub-btn-type" onclick="setType('plush', this)">玩偶吊飾</button>
+        <button type="button" class="sub-btn-type" onclick="setType('home', this)">居家日用品</button>
+        <button type="button" class="sub-btn-type" onclick="setType('accessories', this)">包袋配件</button>
+      </div>
+
     </div>
   </div>
 
   <div class="container">
     <div class="product-grid" id="product-list">
 
-      <!-- 商品 1：DisneyXSelfridge冬日金黃系列（內含 3 張圖） -->
-      <div class="product-card" data-status="preorder" data-sub="selfridges-gold">
+      <!-- 商品 1：同時設定 data-series（系列）與 data-type（類別） -->
+      <div class="product-card" data-status="preorder" data-series="selfridges-gold" data-type="plush">
         <div class="product-img-box">
           <span class="badge preorder">預購開團</span>
           <div class="carousel-track">
@@ -355,29 +406,11 @@
         <div class="product-info">
           <div class="product-category-tag">#DisneyXSelfridge冬日金黃系列</div>
           <div class="product-title">Selfridges限定-金黃冬日維尼</div>
-          <div class="product-note">英國百貨限定款・預計到貨約4-5週</div>
+          <div class="product-note">英國百貨限定款・預計到貨約2-3週</div>
           <div class="product-price">NT$ 2,600</div>
-          <a class="line-btn" href="https://line.me！我想購買：【預購】Selfridges限定-金黃冬日維尼（NT$ 2,600）" target="_blank">
-            點我 LINE 喊單
+          <a class="line-btn" href="https://line.me/R/ti/p/@029ieror
           </a>
         </div>
       </div>
 
-      <!-- 商品 2：日本迪士尼白色冬季新品-居家日用品（內含 2 張圖） -->
-      <div class="product-card" data-status="preorder" data-sub="jp-disney-white">
-        <div class="product-img-box">
-          <span class="badge preorder">預購開團</span>
-          <div class="carousel-track">
-            <img src="jp_white_1.jpg" alt="日本迪士尼白色冬季新品 1" onerror="this.src='https://placehold.co'">
-            <img src="jp_white_2.jpg" alt="日本迪士尼白色冬季新品 2" onerror="this.src='https://placehold.co'">
-          </div>
-        </div>
-        <div class="product-info">
-          <div class="product-category-tag">#日本迪士尼白色冬季新品-居家日用品</div>
-          <div class="product-title">（範例）白色冬季奇奇蒂蒂保溫杯</div>
-          <div class="product-note">日本迪士尼商店限定・預計到貨約2週</div>
-          <div class="product-price">NT$ 980</div>
-          <a class="line-btn" href="https://line.me！我想購買：【預購】白色冬季奇奇蒂蒂保溫杯（NT$ 980）" target="_blank">
-            點我 LINE 喊單
-          </a>
-        </div>
+            
