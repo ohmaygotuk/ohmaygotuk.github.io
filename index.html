@@ -65,7 +65,7 @@ main{max-width:980px;margin:auto;padding:22px 16px}.tools{display:flex;gap:10px;
 <div class="overlay" id="overlay"></div>
 <aside class="drawer" id="drawer" aria-label="商品分類"><div class="drawer-head">商品分類 <button type="button" class="close" id="closeMenu" aria-label="關閉">×</button></div><div class="section">商品分類</div><div id="filters"></div><a class="drawer-line" href="https://line.me/R/ti/p/@029ieror" target="_blank" rel="noopener">＋ 加入官方 LINE</a></aside>
 <header><h1>oh.maygot_uk</h1><p>英國選物代購 ｜ 現貨與預購商品目錄</p><a href="https://line.me/R/ti/p/@029ieror" target="_blank" rel="noopener">♡ 加入官方 LINE 詢問商品</a></header>
-<main><div class="tools"><input id="searchInput" type="search" placeholder="搜尋商品名稱或關鍵字…" aria-label="搜尋商品"><span id="resultCount">共 1 件商品</span></div><div class="grid" id="productGrid"><article class="card"><div class="image-box"><div class="track"><img src="/winnie_1.jpg" alt="金黃冬日維尼照片1"><img src="/winnie_2.jpg" alt="金黃冬日維尼照片2"></div><span class="badge preorder">預購開團</span></div><div class="info"><div class="category">冬日金黃系列</div><div class="title">Selfridges限定－金黃冬日維尼</div><div class="note">英國百貨限定款・預計到貨約2–3週</div><div class="price">NT$ 2,600</div><a class="buy" href="https://line.me/R/ti/p/@029ieror" target="_blank" rel="noopener noreferrer">♡ LINE 詢問商品</a></div></article></div><div class="empty" id="emptyMessage" hidden>目前沒有符合條件的商品 🤎</div></main><footer>© oh.maygot_uk · 精選每一份喜歡</footer>
+<main><div class="tools"><input id="searchInput" type="search" placeholder="搜尋商品名稱或關鍵字…" aria-label="搜尋商品"><span id="resultCount">共 1 件商品</span></div><div class="grid" id="productGrid"><article class="card"><div class="image-box"><div class="track"><img src="/winnie_1.jpg" alt="金黃冬日維尼照片1"><img src="/winnie_2.jpg" alt="金黃冬日維尼照片2"></div><span class="badge preorder">預購開團</span></div><div class="info"><div class="category">冬日金黃系列</div><div class="title">Selfridges限定－金黃冬日維尼</div><div class="note">英國百貨限定款・預計到貨約4–5週</div><div class="price">NT$ 2,600</div><a class="buy" href="https://line.me/R/ti/p/@029ieror" target="_blank" rel="noopener noreferrer">♡ LINE 詢問商品</a></div></article></div><div class="empty" id="emptyMessage" hidden>目前沒有符合條件的商品 🤎</div></main><footer>© oh.maygot_uk · 精選每一份喜歡</footer>
 <script>
 /* 商品資料：未來新增商品，只需要在 PRODUCTS 陣列增加一個物件。圖片請上傳至與 index.html 相同的資料夾。 */
 const PRODUCTS = [
@@ -115,7 +115,19 @@ const PRODUCTS = [
     note: "英國selfridges百貨限定款・預計到貨約4–5週",
     images: ["/eeyore_1.jpg", "/eeyore_2.jpg", "/eeyore_3.jpg"],
     keywords: ["屹耳", "eeyore", "Selfridges"]
-  }
+  },
+
+   {
+    id: "005",
+    name: "屹耳衛兵吊飾",
+    price: 1350,
+    status: "instock",
+    series: "disney",
+    type: "keychain",
+    note: "英國selfridges百貨限定款・預計到貨約4–5週",
+    images: ["/eeyoreguardsman_1.jpg", "/eeyoreguardsman_2.jpg", "/eeyoreguardsman_3.jpg"],
+    keywords: ["屹耳", "eeyore", "吊飾"]
+   }
 ];
 const LINE_URL = "https://line.me/R/ti/p/@029ieror";
 const SERIES = {"selfridges-gold":"冬日金黃系列","jp-disney-white":"日本迪士尼白色冬季新品","jellycat":"Jellycat","disney":"Disney 迪士尼","other":"其他選物"};
