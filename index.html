@@ -46,18 +46,43 @@
     header p {
       font-size: 0.9rem;
       color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .header-line-link {
+      display: inline-block;
+      background-color: #f0fdf4;
+      color: var(--line-green);
+      border: 1px solid var(--line-green);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .header-line-link:hover {
+      background-color: var(--line-green);
+      color: #ffffff;
+    }
+
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      background-color: rgba(250, 248, 245, 0.96);
+      backdrop-filter: blur(5px);
+      z-index: 10;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      margin-bottom: 20px;
     }
 
     .filter-bar {
       display: flex;
       justify-content: center;
       gap: 10px;
-      padding: 20px 16px;
-      position: sticky;
-      top: 0;
-      background-color: rgba(250, 248, 245, 0.95);
-      backdrop-filter: blur(5px);
-      z-index: 10;
+      flex-wrap: wrap;
     }
 
     .filter-btn {
@@ -75,6 +100,36 @@
       background-color: var(--text-main);
       color: #fff;
       border-color: var(--text-main);
+    }
+
+    .sub-filter-bar {
+      display: none;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #e0dcd5;
+    }
+
+    .sub-filter-bar.show {
+      display: flex;
+    }
+
+    .sub-filter-btn {
+      padding: 6px 14px;
+      border: 1px solid #e76f51;
+      background-color: #fff;
+      color: #e76f51;
+      border-radius: 16px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sub-filter-btn.active {
+      background-color: #e76f51;
+      color: #fff;
     }
 
     .container {
@@ -103,20 +158,93 @@
       transform: translateY(-3px);
     }
 
+    /* 多圖輪播外框 */
     .product-img-box {
       position: relative;
       width: 100%;
-      padding-top: 100%; /* 1:1 正方形圖片比例 */
+      padding-top: 100%;
       background-color: #f0ece6;
+      overflow: hidden;
     }
 
-    .product-img-box img {
+    .carousel-track {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      display: flex;
+      transition: transform 0.3s ease-out;
+    }
+
+    .carousel-track img {
+      width: 100%;
+      height: 100%;
+      flex-shrink: 0;
       object-fit: cover;
+      user-select: none;
+    }
+
+    /* 左右切換箭頭 */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.85);
+      color: #333;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      z-index: 3;
+      transition: background-color 0.2s;
+    }
+
+    .carousel-btn:hover {
+      background-color: #ffffff;
+    }
+
+    .carousel-btn.prev {
+      left: 8px;
+    }
+
+    .carousel-btn.next {
+      right: 8px;
+    }
+
+    /* 底部圓點指示器 */
+    .carousel-dots {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      z-index: 3;
+      background-color: rgba(0, 0, 0, 0.25);
+      padding: 4px 8px;
+      border-radius: 10px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .dot.active {
+      background-color: #ffffff;
+      transform: scale(1.2);
     }
 
     .badge {
@@ -128,6 +256,7 @@
       font-size: 0.78rem;
       font-weight: bold;
       color: #fff;
+      z-index: 3;
     }
 
     .badge.preorder {
@@ -143,6 +272,13 @@
       display: flex;
       flex-direction: column;
       flex-grow: 1;
+    }
+
+    .product-category-tag {
+      font-size: 0.75rem;
+      color: #e76f51;
+      font-weight: 600;
+      margin-bottom: 4px;
     }
 
     .product-title {
@@ -190,6 +326,12 @@
       font-size: 0.85rem;
       color: var(--text-muted);
     }
+
+    footer a {
+      color: var(--line-green);
+      text-decoration: none;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -197,77 +339,61 @@
   <header>
     <h1>oh.maygot_uk</h1>
     <p>英國選物代購 ｜ 現貨與預購商品目錄</p>
-    <a class="header-line-link" href="https://line.me/R/ti/p/@029ieror" target="_blank">
-      +加入官方LINE(@029ieror)詢問
+    <a class="header-line-link" href="https://line.me" target="_blank">
+      ＋ 加入官方 LINE (@029ieror) 詢問
     </a>
   </header>
 
-  <div class="filter-bar">
-    <button class="filter-btn active" onclick="filterProducts('all', this)">全部商品</button>
-    <button class="filter-btn" onclick="filterProducts('instock', this)">⚡ 現貨專區</button>
-    <button class="filter-btn" onclick="filterProducts('preorder', this)">🛍️ 預購開團</button>
+  <div class="sticky-nav">
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterMain('all', this)">全部商品</button>
+      <button class="filter-btn" onclick="filterMain('instock', this)">⚡ 現貨專區</button>
+      <button class="filter-btn" onclick="filterMain('preorder', this)">🛍️ 預購開團</button>
+    </div>
+
+    <div class="sub-filter-bar" id="preorder-sub-bar">
+      <button class="sub-filter-btn active" onclick="filterSub('all', this)">全部預購</button>
+      <button class="sub-filter-btn" onclick="filterSub('selfridges-gold', this)">DisneyXSelfridge冬日金黃系列</button>
+      <button class="sub-filter-btn" onclick="filterSub('jp-disney-white', this)">日本迪士尼白色冬季新品-居家日用品</button>
+    </div>
   </div>
 
   <div class="container">
     <div class="product-grid" id="product-list">
 
-      <!-- 商品 1：預購商品範例 -->
-      <div class="product-card" data-status="preorder">
+      <!-- 商品 1：多張圖片範例（放了 3 張圖片） -->
+      <div class="product-card" data-status="preorder" data-sub="selfridges-gold">
         <div class="product-img-box">
           <span class="badge preorder">預購開團</span>
-          <!-- 請將下方 src 換成你的圖片檔名，例如 winnie.jpg -->
-          <img src="winnie.jpg" alt="Selfridges限定-金黃冬日維尼" onerror="this.src='https://placehold.co'">
+          <div class="carousel-track">
+            <!-- 第 1 張圖 -->
+            <img src="winnie_1.jpg" alt="Selfridges限定-金黃冬日維尼 正面" onerror="this.src='https://placehold.co（正面）'">
+            <!-- 第 2 張圖 -->
+            <img src="winnie_2.jpg" alt="Selfridges限定-金黃冬日維尼 背面" onerror="this.src='https://placehold.co（細節）'">
+            <!-- 第 3 張圖 -->
+            <img src="winnie_3.jpg" alt="Selfridges限定-金黃冬日維尼 尺寸" onerror="this.src='https://placehold.co（實拍）'">
+          </div>
         </div>
         <div class="product-info">
+          <div class="product-category-tag">#DisneyXSelfridge冬日金黃系列</div>
           <div class="product-title">Selfridges限定-金黃冬日維尼</div>
           <div class="product-note">英國百貨限定款・預計到貨約4-5週</div>
           <div class="product-price">NT$ 2,600</div>
-          <a class="line-btn" href="https://line.me/R/ti/p/@029ieror" target="_blank">
+          <a class="line-btn" href="https://line.me！我想購買：【預購】Selfridges限定-金黃冬日維尼（NT$ 2,600）" target="_blank">
             點我 LINE 喊單
           </a>
         </div>
       </div>
 
-      <!-- 商品 2：現貨商品範例（日後要新增商品，複製這個區塊即可） -->
-      <div class="product-card" data-status="instock">
+      <!-- 商品 2：日本迪士尼白色冬季新品-居家日用品（放了 2 張圖片） -->
+      <div class="product-card" data-status="preorder" data-sub="jp-disney-white">
         <div class="product-img-box">
-          <span class="badge instock">現貨供應</span>
-          <img src="sample_instock.jpg" alt="現貨範例商品" onerror="this.src='https://placehold.co'">
+          <span class="badge preorder">預購開團</span>
+          <div class="carousel-track">
+            <img src="jp_white_1.jpg" alt="日本迪士尼白色冬季新品 1" onerror="this.src='https://placehold.co'">
+            <img src="jp_white_2.jpg" alt="日本迪士尼白色冬季新品 2" onerror="this.src='https://placehold.co'">
+          </div>
         </div>
         <div class="product-info">
-          <div class="product-title">（範例）英國限定現貨商品</div>
-          <div class="product-note">在台現貨・下單後 48 小時內寄出</div>
-          <div class="product-price">NT$ 1,280</div>
-          <a class="line-btn" href="https://line.me" target="_blank">
-            點我 LINE 喊單
-          </a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <footer>
-    <p>© oh.maygot_uk ｜ 官方 LINE：@029ieror</p>
-  </footer>
-
-  <script>
-    function filterProducts(category, btnElement) {
-      // 切換按鈕樣式
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      btnElement.classList.add('active');
-
-      // 篩選商品卡片
-      const cards = document.querySelectorAll('.product-card');
-      cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-status') === category) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-  </script>
-
-</body>
-</html>
+          <div class="product-category-tag">#日本迪士尼白色冬季新品-居家日用品</div>
+          <div class="product-title">（範例）白色冬季奇奇蒂蒂保溫杯</div>
