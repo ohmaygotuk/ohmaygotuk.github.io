@@ -113,7 +113,7 @@
     }
 
     .sub-filter-bar.show {
-      display: flex;
+      display: flex !important;
     }
 
     .sub-filter-btn {
@@ -151,14 +151,9 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s;
     }
 
-    .product-card:hover {
-      transform: translateY(-3px);
-    }
-
-    /* 多圖輪播外框 */
+    /* 原生橫向滑動相簿（不依賴複雜程式，手機滑動最順暢） */
     .product-img-box {
       position: relative;
       width: 100%;
@@ -174,7 +169,15 @@
       width: 100%;
       height: 100%;
       display: flex;
-      transition: transform 0.3s ease-out;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox 隱藏捲軸 */
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none; /* Chrome/Safari 隱藏捲軸 */
     }
 
     .carousel-track img {
@@ -182,53 +185,41 @@
       height: 100%;
       flex-shrink: 0;
       object-fit: cover;
-      user-select: none;
+      scroll-snap-align: start;
     }
 
-    /* 左右切換箭頭 */
     .carousel-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background-color: rgba(255, 255, 255, 0.85);
+      background-color: rgba(255, 255, 255, 0.9);
       color: #333;
       border: none;
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      font-size: 16px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-      z-index: 3;
-      transition: background-color 0.2s;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+      z-index: 4;
     }
 
-    .carousel-btn:hover {
-      background-color: #ffffff;
-    }
+    .carousel-btn.prev { left: 8px; }
+    .carousel-btn.next { right: 8px; }
 
-    .carousel-btn.prev {
-      left: 8px;
-    }
-
-    .carousel-btn.next {
-      right: 8px;
-    }
-
-    /* 底部圓點指示器 */
     .carousel-dots {
       position: absolute;
       bottom: 8px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 5px;
-      z-index: 3;
-      background-color: rgba(0, 0, 0, 0.25);
+      gap: 6px;
+      z-index: 4;
+      background-color: rgba(0, 0, 0, 0.3);
       padding: 4px 8px;
       border-radius: 10px;
     }
@@ -239,12 +230,11 @@
       border-radius: 50%;
       background-color: rgba(255, 255, 255, 0.5);
       cursor: pointer;
-      transition: background-color 0.2s;
     }
 
     .dot.active {
       background-color: #ffffff;
-      transform: scale(1.2);
+      transform: scale(1.25);
     }
 
     .badge {
@@ -257,15 +247,11 @@
       font-weight: bold;
       color: #fff;
       z-index: 3;
+      pointer-events: none;
     }
 
-    .badge.preorder {
-      background-color: var(--tag-preorder);
-    }
-
-    .badge.instock {
-      background-color: var(--tag-instock);
-    }
+    .badge.preorder { background-color: var(--tag-preorder); }
+    .badge.instock { background-color: var(--tag-instock); }
 
     .product-info {
       padding: 16px;
@@ -313,11 +299,6 @@
       border-radius: 8px;
       font-weight: 600;
       font-size: 0.95rem;
-      transition: opacity 0.2s;
-    }
-
-    .line-btn:hover {
-      opacity: 0.9;
     }
 
     footer {
@@ -352,7 +333,7 @@
     </div>
 
     <div class="sub-filter-bar" id="preorder-sub-bar">
-      <button type="button" class="sub-filter-btn active" onclick="filterSub('all', this)">預購開團</button>
+      <button type="button" class="sub-filter-btn active" onclick="filterSub('all', this)">全部預購</button>
       <button type="button" class="sub-filter-btn" onclick="filterSub('selfridges-gold', this)">DisneyXSelfridge冬日金黃系列</button>
       <button type="button" class="sub-filter-btn" onclick="filterSub('jp-disney-white', this)">日本迪士尼白色冬季新品-居家日用品</button>
     </div>
@@ -361,17 +342,14 @@
   <div class="container">
     <div class="product-grid" id="product-list">
 
-      <!-- 商品 1：DisneyXSelfridge冬日金黃系列 -->
+      <!-- 商品 1：DisneyXSelfridge冬日金黃系列（內含 3 張圖） -->
       <div class="product-card" data-status="preorder" data-sub="selfridges-gold">
         <div class="product-img-box">
           <span class="badge preorder">預購開團</span>
           <div class="carousel-track">
-            <!-- 第 1 張圖 -->
-            <img src="winnie_1.jpg" alt="Selfridges限定-金黃冬日維尼 正面" onerror="this.src='https://placehold.co（正面）'">
-            <!-- 第 2 張圖 -->
-            <img src="winnie_2.jpg" alt="Selfridges限定-金黃冬日維尼 背面" onerror="this.src='https://placehold.co（細節）'">
-            <!-- 第 3 張圖 -->
-            <img src="winnie_3.jpg" alt="Selfridges限定-金黃冬日維尼 尺寸" onerror="this.src='https://placehold.co（實拍）'">
+            <img src="winnie_1.jpg" alt="Selfridges限定-金黃冬日維尼 1" onerror="this.src='https://placehold.co'">
+            <img src="winnie_2.jpg" alt="Selfridges限定-金黃冬日維尼 2" onerror="this.src='https://placehold.co'">
+            <img src="winnie_3.jpg" alt="Selfridges限定-金黃冬日維尼 2" onerror="this.src='https://placehold.co'">
           </div>
         </div>
         <div class="product-info">
@@ -379,13 +357,13 @@
           <div class="product-title">Selfridges限定-金黃冬日維尼</div>
           <div class="product-note">英國百貨限定款・預計到貨約4-5週</div>
           <div class="product-price">NT$ 2,600</div>
-          <a class="line-btn" href="https://line.me/R/ti/p/@029ieror" target="_blank">
-            點我LINE喊單
+          <a class="line-btn" href="https://line.me！我想購買：【預購】Selfridges限定-金黃冬日維尼（NT$ 2,600）" target="_blank">
+            點我 LINE 喊單
           </a>
         </div>
       </div>
 
-      <!-- 商品 2：日本迪士尼白色冬季新品-居家日用品（放了 2 張圖片） -->
+      <!-- 商品 2：日本迪士尼白色冬季新品-居家日用品（內含 2 張圖） -->
       <div class="product-card" data-status="preorder" data-sub="jp-disney-white">
         <div class="product-img-box">
           <span class="badge preorder">預購開團</span>
@@ -397,3 +375,9 @@
         <div class="product-info">
           <div class="product-category-tag">#日本迪士尼白色冬季新品-居家日用品</div>
           <div class="product-title">（範例）白色冬季奇奇蒂蒂保溫杯</div>
+          <div class="product-note">日本迪士尼商店限定・預計到貨約2週</div>
+          <div class="product-price">NT$ 980</div>
+          <a class="line-btn" href="https://line.me！我想購買：【預購】白色冬季奇奇蒂蒂保溫杯（NT$ 980）" target="_blank">
+            點我 LINE 喊單
+          </a>
+        </div>
