@@ -619,15 +619,11 @@ function toggleDrawer(open) {
 =================================== */
 
 function createFilters(containerId, options, selected, callback) {
-
   const container = document.getElementById(containerId);
-
   container.innerHTML = "";
 
   Object.entries(options).forEach(([key, label]) => {
-
     const button = document.createElement("button");
-
     button.className = "filter-option";
 
     if (key === selected) {
@@ -635,20 +631,15 @@ function createFilters(containerId, options, selected, callback) {
     }
 
     button.textContent = label;
-
     button.onclick = () => callback(key);
 
     container.appendChild(button);
-
   });
 }
 
-/* ===================================
-   ⑦ 階層式分類
-=================================== */
+/* 階層式分類 */
 
 function renderFilters() {
-
   createFilters(
     "statusFilters",
     {
@@ -660,15 +651,16 @@ function renderFilters() {
     value => {
       currentStatus = value;
       currentSeries = "all";
-      currentType = "all";
-
       renderFilters();
       renderProducts();
+
+      if (value === "all") {
+        toggleDrawer(false);
+      }
     }
   );
 
-  const seriesSection =
-    document.getElementById("seriesSection");
+  const seriesSection = document.getElementById("seriesSection");
 
   if (currentStatus === "all") {
     seriesSection.style.display = "none";
@@ -694,18 +686,14 @@ function renderFilters() {
   );
 }
 
-/* ===================================
-   ⑧ 商品篩選
-=================================== */
+/* 商品篩選 */
 
 function getFilteredProducts() {
-
   const keyword = document
     .getElementById("searchInput")
     .value.trim().toLowerCase();
 
   return PRODUCTS.filter(product => {
-
     const matchStatus =
       currentStatus === "all" ||
       product.status === currentStatus;
@@ -721,19 +709,17 @@ function getFilteredProducts() {
       ...(product.keywords || [])
     ].join(" ").toLowerCase();
 
-    const matchKeyword =
-      !keyword || searchText.includes(keyword);
-
-    return matchStatus && matchSeries && matchKeyword;
+    return (
+      matchStatus &&
+      matchSeries &&
+      (!keyword || searchText.includes(keyword))
+    );
   });
 }
 
-/* ===================================
-   ⑨ 顯示商品
-=================================== */
+/* 商品顯示 */
 
 function renderProducts() {
-
   const grid = document.getElementById("productGrid");
   const empty = document.getElementById("emptyMessage");
   const count = document.getElementById("resultCount");
@@ -741,13 +727,10 @@ function renderProducts() {
   const products = getFilteredProducts();
 
   grid.innerHTML = "";
-
   count.textContent = `共 ${products.length} 件商品`;
-
   empty.hidden = products.length > 0;
 
   products.forEach(product => {
-
     const card = document.createElement("article");
     card.className = "card";
 
@@ -755,8 +738,7 @@ function renderProducts() {
       <img src="${src}" alt="${product.name}" loading="lazy">
     ).join("");
 
-    const statusLabel =
-      STATUS[product.status] || "商品";
+    const statusLabel = STATUS[product.status] || "商品";
 
     const buyButton = product.status === "soldout"
       ? <span class="buy-btn disabled">已售完</span>
@@ -767,42 +749,31 @@ function renderProducts() {
 
     card.innerHTML = `
       <div class="img-box">
-
-        <div class="track">
-          ${images}
-        </div>
+        <div class="track">${images}</div>
 
         <span class="badge ${product.status}">
           ${statusLabel}
         </span>
 
-        ${product.images.length > 1 ? `
-          <button class="arrow prev" aria-label="上一張">‹</button>
-          <button class="arrow next" aria-label="下一張">›</button>
+        ${(product.images || []).length > 1 ? `
+          <button class="arrow prev">‹</button>
+          <button class="arrow next">›</button>
         ` : ""}
-
       </div>
 
       <div class="info">
-
         <div class="category">
           ${SERIES[product.series] || "精選商品"}
         </div>
 
-        <div class="title">
-          ${product.name}
-        </div>
-
-        <div class="note">
-          ${product.note || ""}
-        </div>
+        <div class="title">${product.name}</div>
+        <div class="note">${product.note || ""}</div>
 
         <div class="price">
           NT$ ${Number(product.price).toLocaleString("zh-TW")}
         </div>
 
         ${buyButton}
-
       </div>
     `;
 
@@ -813,24 +784,24 @@ function renderProducts() {
     const next = card.querySelector(".next");
 
     if (prev && next) {
-      prev.onclick = () =>
+      prev.onclick = () => {
         track.scrollBy({
           left: -track.clientWidth,
           behavior: "smooth"
         });
+      };
 
-      next.onclick = () =>
+      next.onclick = () => {
         track.scrollBy({
           left: track.clientWidth,
           behavior: "smooth"
         });
+      };
     }
   });
 }
 
-/* ===================================
-   ⑩ 網站初始化
-=================================== */
+/* 啟動網站 */
 
 renderFilters();
 renderProducts();
