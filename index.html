@@ -734,9 +734,9 @@ function renderProducts() {
     const card = document.createElement("article");
     card.className = "card";
 
-    const images = (product.images || []).map(src =>
-      <img src="${src}" alt="${product.name}" loading="lazy">
-    ).join("");
+   const images = (product.images || []).map(src =>
+  `<img src="${src}" alt="${product.name}" loading="lazy">`
+).join("");
 
     const statusLabel = STATUS[product.status] || "商品";
 
