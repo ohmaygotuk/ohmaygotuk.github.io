@@ -648,52 +648,56 @@ function renderFilters() {
       preorder: "🛍️ 預購開團"
     },
     currentStatus,
+    ,
     value => {
       currentStatus = value;
-      currentSeries = "all";
-      renderFilters();
-      renderProducts();
-
-      if (value === "all") {
-        toggleDrawer(false);
-      }
+      updatePage();
     }
   );
-
-  const seriesSection = document.getElementById("seriesSection");
-
-  if (currentStatus === "all") {
-    seriesSection.style.display = "none";
-    return;
-  }
-
-  seriesSection.style.display = "block";
 
   createFilters(
     "seriesFilters",
     {
       all: "全部系列",
-      "selfridges-gold": "冬日金黃系列",
-      "jp-disney-white": "日本迪士尼白色冬季新品"
+      ...SERIES
     },
     currentSeries,
     value => {
       currentSeries = value;
-      renderFilters();
-      renderProducts();
-      toggleDrawer(false);
+      updatePage();
+    }
+  );
+
+  createFilters(
+    "typeFilters",
+    {
+      all: "全部類別",
+      ...TYPES
+    },
+    currentType,
+    value => {
+      currentType = value;
+      updatePage();
     }
   );
 }
 
-/* 商品篩選 */
+function updatePage() {
+  renderFilters();
+  renderProducts();
+  toggleDrawer(false);
+}
 
 function getFilteredProducts() {
+
   const keyword = document
     .getElementById("searchInput")
-    .value.trim().toLowerCase();
+    .value
+    .trim()
+    .toLowerCase();
 
   return PRODUCTS.filter(product => {
+
     const matchStatus =
       currentStatus === "all" ||
       product.status === currentStatus;
@@ -702,88 +706,85 @@ function getFilteredProducts() {
       currentSeries === "all" ||
       product.series === currentSeries;
 
-    const searchText = [
+    const matchType =
+      currentType === "all" ||
+      product.type === currentType;
+
+    const searchableText = [
       product.name,
       product.note,
-      SERIES[product.series] || "",
+      SERIES[product.series],
+      TYPES[product.type],
       ...(product.keywords || [])
     ].join(" ").toLowerCase();
 
-    return (
-      matchStatus &&
-      matchSeries &&
-      (!keyword || searchText.includes(keyword))
-    );
-  });
+    return matchStatus &&
+           matchSeries &&
+           matchType &&
+           searchableText.includes(keyword);
+
+  }).sort((a, b) =>
+    (b.date || "").localeCompare(a.date || "")
+  );
 }
 
-/* 商品顯示 */
-
 function renderProducts() {
+
   const grid = document.getElementById("productGrid");
-  const empty = document.getElementById("emptyMessage");
-  const count = document.getElementById("resultCount");
+  grid.innerHTML = "";
 
   const products = getFilteredProducts();
 
-  grid.innerHTML = "";
-  count.textContent = `共 ${products.length} 件商品`;
-  empty.hidden = products.length > 0;
+  document.getElementById("resultCount")
+    .textContent = `目前顯示 ${products.length} 件商品`;
+
+  document.getElementById("emptyMessage")
+    .hidden = products.length !== 0;
 
   products.forEach(product => {
+
     const card = document.createElement("article");
     card.className = "card";
 
-   const images = (product.images || []).map(src =>
-  `<img src="${src}" alt="${product.name}" loading="lazy">`
-).join("");
+    const imgBox = document.createElement("div");
+    imgBox.className = "img-box";
 
-    const statusLabel = STATUS[product.status] || "商品";
+    const badge = document.createElement("span");
+    badge.className = `badge ${product.status}`;
+    badge.textContent = STATUS[product.status] || "商品";
+    imgBox.appendChild(badge);
 
-    const buyButton = product.status === "soldout"
-      ? <span class="buy-btn disabled">已售完</span>
-      : `<a class="buy-btn" href="${LINE_URL}"
-            target="_blank" rel="noopener noreferrer">
-            ♡ LINE 詢問商品
-         </a>`;
+    const track = document.createElement("div");
+    track.className = "track";
 
-    card.innerHTML = `
-      <div class="img-box">
-        <div class="track">${images}</div>
+    const images = product.images || [];
 
-        <span class="badge ${product.status}">
-          ${statusLabel}
-        </span>
+    images.forEach(src => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = product.name;
+      img.loading = "lazy";
 
-        ${(product.images || []).length > 1 ? `
-          <button class="arrow prev">‹</button>
-          <button class="arrow next">›</button>
-        ` : ""}
-      </div>
+      img.onerror = function() {
+        this.onerror = null;
+        this.style.display = "none";
+      };
 
-      <div class="info">
-        <div class="category">
-          ${SERIES[product.series] || "精選商品"}
-        </div>
+      track.appendChild(img);
+    });
 
-        <div class="title">${product.name}</div>
-        <div class="note">${product.note || ""}</div>
+    imgBox.appendChild(track);
 
-        <div class="price">
-          NT$ ${Number(product.price).toLocaleString("zh-TW")}
-        </div>
+    if (images.length > 1) {
 
-        ${buyButton}
-      </div>
-    `;
+      const prev = document.createElement("button");
+      prev.className = "arrow prev";
+      prev.textContent = "‹";
 
-    grid.appendChild(card);
+      const next = document.createElement("button");
+      next.className = "arrow next";
+      next.textContent = "›";
 
-    const track = card.querySelector(".track");
-    const prev = card.querySelector(".prev");
-    const next = card.querySelector(".next");
-
-    if (prev && next) {
       prev.onclick = () => {
         track.scrollBy({
           left: -track.clientWidth,
@@ -797,15 +798,62 @@ function renderProducts() {
           behavior: "smooth"
         });
       };
+
+      imgBox.appendChild(prev);
+      imgBox.appendChild(next);
     }
+
+    card.appendChild(imgBox);
+
+    const info = document.createElement("div");
+    info.className = "info";
+
+    const category = document.createElement("div");
+    category.className = "category";
+    category.textContent =
+      `${SERIES[product.series] || "其他系列"} ｜ ${TYPES[product.type] || "其他商品"}`;
+
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = product.name;
+
+    const note = document.createElement("div");
+    note.className = "note";
+    note.textContent = product.note || "";
+
+    const price = document.createElement("div");
+    price.className = "price";
+    price.textContent =
+      `NT$ ${Number(product.price).toLocaleString("zh-TW")}`;
+
+    const buy = document.createElement("a");
+    buy.className = "buy-btn";
+
+    if (product.status === "soldout") {
+      buy.textContent = "已售完";
+      buy.classList.add("disabled");
+    } else {
+      buy.textContent = "♡ LINE 詢問商品";
+      buy.href = LINE_URL;
+      buy.target = "_blank";
+      buy.rel = "noopener noreferrer";
+    }
+
+    info.appendChild(category);
+    info.appendChild(title);
+    info.appendChild(note);
+    info.appendChild(price);
+    info.appendChild(buy);
+
+    card.appendChild(info);
+    grid.appendChild(card);
   });
 }
-
-/* 啟動網站 */
 
 renderFilters();
 renderProducts();
 
 </script>
+
 </body>
 </html>
