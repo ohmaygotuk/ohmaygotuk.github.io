@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>oh.maygot_uk | 英國代購商品目錄</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", sans-serif; }
+    body { background: #faf8f5; color: #333; padding-bottom: 50px; }
+    .top-nav { position: sticky; top: 0; background: rgba(255,255,255,0.96); display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #eee; z-index: 20; }
+    .menu-btn { background: none; border: 1px solid #ddd; border-radius: 8px; width: 40px; height: 38px; font-size: 1.3rem; cursor: pointer; }
+    .nav-brand { font-size: 1.15rem; font-weight: 700; }
+    .nav-line { background: #06c755; color: #fff; text-decoration: none; font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: 16px; }
+    header { background: #fff; text-align: center; padding: 24px 16px; border-bottom: 1px solid #eee; margin-bottom: 16px; }
+    header h1 { font-size: 1.5rem; margin-bottom: 6px; }
+    header p { font-size: 0.88rem; color: #777; margin-bottom: 14px; }
+    .header-line { display: inline-block; background: #f0fdf4; color: #06c755; border: 1px solid #06c755; padding: 7px 18px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+    .status-bar { max-width: 960px; margin: 0 auto 14px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; font-size: 0.88rem; color: #777; }
+    .status-bar strong { color: #333; }
+    .open-btn { background: #fff; border: 1px solid #ddd; padding: 4px 12px; border-radius: 14px; font-size: 0.82rem; cursor: pointer; }
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 90; }
+    .overlay.open { display: block; }
+    .drawer { position: fixed; top: 0; left: -300px; width: 280px; max-width: 82vw; height: 100%; background: #fff; z-index: 100; transition: left 0.3s; display: flex; flex-direction: column; overflow-y: auto; }
+    .drawer.open { left: 0; }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 20px; border-bottom: 1px solid #eee; font-weight: 700; }
+    .close-btn { background: none; border: none; font-size: 1.5rem; color: #666; cursor: pointer; }
+    .drawer-body { padding: 16px 20px; flex-grow: 1; }
+    .sec-title { font-size: 0.78rem; font-weight: 700; color: #777; margin: 14px 0 8px; }
+    .d-btn { display: block; width: 100%; text-align: left; background: #f9f8f6; border: 1px solid #ece8e1; padding: 10px 14px; border-radius: 10px; font-size: 0.92rem; margin-bottom: 8px; cursor: pointer; }
+    .d-btn.active { background: #333; color: #fff; border-color: #333; font-weight: 600; }
+    .sub-box { display: none; padding-left: 10px; border-left: 2px solid #e76f51; margin: 8px 0 14px 4px; }
+    .sub-box.show { display: block; }
+    .sub-btn { display: block; width: 100%; text-align: left; background: #fff; border: 1px solid #e5e0d8; padding: 8px 12px; border-radius: 8px; font-size: 0.84rem; margin-bottom: 6px; cursor: pointer; }
+    .sub-btn.active { background: #e76f51; color: #fff; border-color: #e76f51; font-weight: 600; }
+    .type-btn { display: inline-block; background: #fff; border: 1px solid #b08968; color: #8d6e63; padding: 5px 10px; border-radius: 14px; font-size: 0.8rem; margin: 0 4px 6px 0; cursor: pointer; }
+    .type-btn.active { background: #8d6e63; color: #fff; }
+    .drawer-foot { padding: 16px 20px; border-top: 1px solid #eee; background: #faf8f5; }
+    .drawer-line { display: block; text-align: center; background: #06c755; color: #fff; text-decoration: none; padding: 10px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; flex-direction: column; }
+    .img-box { position: relative; width: 100%; padding-top: 133%; background: #f7f4f0; overflow: hidden; }
+    .track { position: absolute; inset: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+    .track::-webkit-scrollbar { display: none; }
+    .track img { width: 100%; height: 100%; flex-shrink: 0; object-fit: contain; scroll-snap-align: start; }
+    .c-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 18px; font-weight: bold; cursor: pointer; z-index: 4; box-shadow: 0 1px 5px rgba(0,0,0,0.2); }
+    .c-btn.prev { left: 8px; }
+    .c-btn.next { right: 8px; }
+    .dots { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 4; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 10px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; }
+    .dot.active { background: #fff; transform: scale(1.25); }
+    .badge { position: absolute; top: 12px; left: 12px; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: bold; color: #fff; z-index: 3; }
+    .badge.preorder { background: #e76f51; }
+    .badge.instock { background: #2a9d8f; }
+    .info { padding: 16px; display: flex; flex-direction: column; flex-grow: 1; }
+    .cat-tag { font-size: 0.75rem; color: #e76f51; font-weight: 600; margin-bottom: 4px; }
+    .title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+    .note { font-size: 0.85rem; color: #777; margin-bottom: 12px; }
+    .price { font-size: 1.15rem; font-weight: bold; margin-top: auto; margin-bottom: 14px; }
+    .line-btn { display: block; width: 100%; text-align: center; background: #06c755; color: #fff; text-decoration: none; padding: 11px 0; border-radius: 8px; font-weight: 600; font-size: 0.95rem; }
+    footer { text-align: center; margin-top: 48px; font-size: 0.85rem; color: #777; }
+    footer a { color: #06c755; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <button type="button" class="menu-btn" onclick="toggleDrawer(true)">☰</button>
+    <div class="nav-brand">oh.maygot_uk</div>
+    <a class="nav-line" href="https://line.me" target="_blank">加官方 LINE</a>
+  </nav>
+
+  <div class="overlay" id="overlay" onclick="toggleDrawer(false)"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <span>商品分類篩選</span>
+      <button type="button" class="close-btn" onclick="toggleDrawer(false)">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="sec-title" style="margin-top:0">主分類</div>
+      <button type="button" class="d-btn active" id="m-all" onclick="setMain('all','全部商品')">全部商品</button>
+      <button type="button" class="d-btn" id="m-instock" onclick="setMain('instock','⚡ 現貨專區')">⚡ 現貨專區</button>
+      <button type="button" class="d-btn" id="m-preorder" onclick="setMain('preorder','🛍️ 預購開團')">🛍️ 預購開團 ▾</button>
+
+      <div class="sub-box" id="sub-box">
+        <div class="sec-title">預購系列</div>
+        <button type="button" class="sub-btn active" onclick="setSeries('all','全部預購系列',this)">全部預購系列</button>
+        <button type="button" class="sub-btn" onclick="setSeries('selfridges-gold','DisneyXSelfridge冬日金黃系列',this)">DisneyXSelfridge冬日金黃系列</button>
+        <button type="button" class="sub-btn" onclick="setSeries('jp-disney-white','日本迪士尼白色冬季新品-居家日用品',this)">日本迪士尼白色冬季新品-居家日用品</button>
+
+        <div class="sec-title">商品類別</div>
+        <button type="button" class="type-btn active" onclick="setType('all',this)">全部類別</button>
+        <button type="button" class="type-btn" onclick="setType('plush',this)">玩偶吊飾</button>
+        <button type="button" class="type-btn" onclick="setType('home',this)">居家日用品</button>
+        <button type="button" class="type-btn" onclick="setType('acc',this)">包袋配件</button>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <a class="drawer-line" href="https://line.me" target="_blank">＋ 加入官方 LINE (@029ieror)</a>
+    </div>
+  </aside>
+
+  <header>
+    <h1>oh.maygot_uk</h1>
+    <p>英國選物代購 ｜ 現貨與預購商品目錄</p>
+    <a class="header-line" href="https://line.me" target="_blank">點選此處加入官方 LINE (@029ieror) 詢問</a>
+  </header>
+
+  <div class="status-bar">
+    <span>目前顯示：<strong id="status-text">全部商品</strong></span>
+    <button type="button" class="open-btn" onclick="toggleDrawer(true)">☰ 切換分類</button>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+
+      <!-- 商品 1 -->
+      <div class="card" data-status="preorder" data-series="selfridges-gold" data-type="plush">
+        <div class="img-box">
+          <span class="badge preorder">預購開團</span>
+          <div class="track">
+            <img src="winnie_1.jpg" alt="維尼1" onerror="this.src='https://placehold.co'">
+            <img src="winnie_2.jpg" alt="維尼2" onerror="this.src='https://placehold.co'">
+          </div>
+        </div>
+        <div class="info">
+          <div class="cat-tag">#DisneyXSelfridge冬日金黃系列 ｜ #玩偶吊飾</div>
+          <div class="title">Selfridges限定-金黃冬日維尼</div>
+          <div class="note">英國百貨限定款・預計到貨約2-3週</div>
+          <div class="price">NT$ 2,600</div>
+          <a class="line-btn" href="https://line.me！我想購買：【預購】Selfridges限定-金黃冬日維尼（NT$ 2,600）" target="_blank">點我 LINE 喊單</a>
+        </div>
+      </div>
+
+      <!-- 商品 2 -->
+      <div class="card" data-status="preorder" data-series="jp-disney-white" data-type="home">
+        <div class="img-box">
+          <span class="badge preorder">預購開團</span>
+          <div class="track">
