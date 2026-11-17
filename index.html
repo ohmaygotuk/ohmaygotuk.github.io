@@ -122,6 +122,7 @@ const PRODUCTS = [
     name: "屹耳衛兵吊飾",
     price: 1350,
     status: "instock",
+    soldout: false, 
     series: "disney",
     type: "keychain",
     note: "英國selfridges百貨限定款・預計到貨約4–5週",
@@ -176,7 +177,30 @@ function renderProducts(){
     if((p.images||[]).length>1){for(const [cls,symbol,dir] of [["prev","‹",-1],["next","›",1]]){const arrow=document.createElement("button");arrow.type="button";arrow.className="arrow "+cls;arrow.textContent=symbol;arrow.setAttribute("aria-label",dir<0?"上一張":"下一張");arrow.addEventListener("click",()=>track.scrollBy({left:dir*track.clientWidth,behavior:"smooth"}));box.appendChild(arrow)}}
     const info=document.createElement("div");info.className="info";
     for(const [cls,value] of [["category",SERIES[p.series]||"精選商品"],["title",p.name],["note",p.note||""],["price","NT$ "+Number(p.price).toLocaleString("zh-TW")]]){const el=document.createElement("div");el.className=cls;el.textContent=value;info.appendChild(el)}
-    const buy=document.createElement(p.status==="soldout"?"span":"a");buy.className="buy"+(p.status==="soldout"?" disabled":"");buy.textContent=p.status==="soldout"?"已售完":"♡ LINE 詢問商品";if(p.status!=="soldout"){buy.href=LINE_URL;buy.target="_blank";buy.rel="noopener noreferrer"}info.appendChild(buy);
+    /* 商品下單按鈕 */
+
+const isSoldout = p.soldout === true || p.status === "soldout";
+
+const buy = document.createElement(isSoldout ? "span" : "a");
+
+buy.className = "buy" + (isSoldout ? " disabled" : "");
+
+if (isSoldout) {
+  buy.textContent = "已售完";
+} else if (p.status === "instock") {
+  buy.textContent = "🛒 賣貨便下單";
+  buy.href = p.shopUrl || SHOP_URL;
+} else {
+  buy.textContent = "♡ LINE 詢問商品";
+  buy.href = LINE_URL;
+}
+
+if (!isSoldout) {
+  buy.target = "_blank";
+  buy.rel = "noopener noreferrer";
+}
+
+info.appendChild(buy);
     card.append(box,info);grid.appendChild(card);
   });
 }
