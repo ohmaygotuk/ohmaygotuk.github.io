@@ -139,3 +139,150 @@
         <div class="img-box">
           <span class="badge preorder">預購開團</span>
           <div class="track">
+
+              <script>
+    let currentMain = 'all';
+    let currentSeries = 'all';
+    let currentType = 'all';
+
+    // 開啟側邊選單（三條線按鈕）
+    function openDrawer() {
+      document.getElementById('side-drawer').classList.add('open');
+      const overlay = document.getElementById('drawer-overlay');
+      if (overlay) overlay.classList.add('open');
+    }
+
+    // 關閉側邊選單
+    function closeDrawer() {
+      document.getElementById('side-drawer').classList.remove('open');
+      const overlay = document.getElementById('drawer-overlay');
+      if (overlay) overlay.classList.remove('open');
+    }
+
+    // 選擇主分類（全部 / 現貨 / 預購）
+    function selectMain(val, labelText) {
+      currentMain = val;
+      currentSeries = 'all';
+      currentType = 'all';
+
+      document.querySelectorAll('.drawer-item-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-main-' + val);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const subBox = document.getElementById('drawer-preorder-sub');
+      if (subBox) {
+        if (val === 'preorder') {
+          subBox.classList.add('show');
+          document.querySelectorAll('.sub-item-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+          document.querySelectorAll('.sub-type-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+        } else {
+          subBox.classList.remove('show');
+          closeDrawer();
+        }
+      }
+
+      const statusLabel = document.getElementById('current-filter-label');
+      if (statusLabel) statusLabel.innerText = labelText;
+
+      filterCards();
+    }
+
+    // 選擇預購系列
+    function selectSeries(val, labelText, btn) {
+      currentSeries = val;
+      document.querySelectorAll('.sub-item-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const statusLabel = document.getElementById('current-filter-label');
+      if (statusLabel) statusLabel.innerText = '預購開團 ＞ ' + labelText;
+
+      filterCards();
+      closeDrawer();
+    }
+
+    // 選擇商品類別
+    function selectType(val, btn) {
+      currentType = val;
+      document.querySelectorAll('.sub-type-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      filterCards();
+      closeDrawer();
+    }
+
+    // 執行商品卡片顯示過濾
+    function filterCards() {
+      document.querySelectorAll('.product-card').forEach(card => {
+        const status = card.getAttribute('data-status');
+        const series = card.getAttribute('data-series');
+        const type = card.getAttribute('data-type');
+
+        if (currentMain === 'all') {
+          card.style.display = 'flex';
+        } else if (currentMain === 'instock') {
+          card.style.display = (status === 'instock') ? 'flex' : 'none';
+        } else if (currentMain === 'preorder') {
+          const matchSeries = (currentSeries === 'all' || series === currentSeries);
+          const matchType = (currentType === 'all' || type === currentType);
+          card.style.display = (status === 'preorder' && matchSeries && matchType) ? 'flex' : 'none';
+        }
+      });
+    }
+
+    // 初始化多圖左右切換箭頭與圓點
+    document.querySelectorAll('.product-img-box').forEach(box => {
+      const track = box.querySelector('.carousel-track');
+      if (!track) return;
+      const images = track.querySelectorAll('img');
+      const total = images.length;
+      if (total <= 1) return;
+
+      const prevBtn = document.createElement('button');
+      prevBtn.type = 'button';
+      prevBtn.className = 'carousel-btn prev';
+      prevBtn.innerHTML = '&#8249;';
+
+      const nextBtn = document.createElement('button');
+      nextBtn.type = 'button';
+      nextBtn.className = 'carousel-btn next';
+      nextBtn.innerHTML = '&#8250;';
+
+      const dotsContainer = document.createElement('div');
+      dotsContainer.className = 'carousel-dots';
+      const dots = [];
+
+      for (let i = 0; i < total; i++) {
+        const dot = document.createElement('span');
+        dot.className = i === 0 ? 'dot active' : 'dot';
+        dot.addEventListener('click', () => {
+          track.scrollTo({ left: track.clientWidth * i, behavior: 'smooth' });
+        });
+        dotsContainer.appendChild(dot);
+        dots.push(dot);
+      }
+
+      box.appendChild(prevBtn);
+      box.appendChild(nextBtn);
+      box.appendChild(dotsContainer);
+
+      prevBtn.addEventListener('click', () => {
+        const currentIndex = Math.round(track.scrollLeft / track.clientWidth);
+        const targetIndex = currentIndex <= 0 ? total - 1 : currentIndex - 1;
+        track.scrollTo({ left: track.clientWidth * targetIndex, behavior: 'smooth' });
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const currentIndex = Math.round(track.scrollLeft / track.clientWidth);
+        const targetIndex = currentIndex >= total - 1 ? 0 : currentIndex + 1;
+        track.scrollTo({ left: track.clientWidth * targetIndex, behavior: 'smooth' });
+      });
+
+      track.addEventListener('scroll', () => {
+        const currentIndex = Math.round(track.scrollLeft / track.clientWidth);
+        dots.forEach((d, idx) => d.classList.toggle('active', idx === currentIndex));
+      }, { passive: true });
+    });
+  </script>
+
+</body>
+</html>
