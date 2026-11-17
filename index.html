@@ -398,6 +398,34 @@ footer {
     grid-template-columns: repeat(4,1fr);
   }
 }
+  /* 第二層商品系列 */
+
+#seriesSection {
+  margin-left: 14px;
+  padding-left: 13px;
+  border-left: 2px solid #E8DDCE;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#seriesSection .section-title {
+  color: #B08968;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#seriesSection .filter-option {
+  background: #F7F1E8;
+  border: 1px solid #E8DDCE;
+  font-size: 12px;
+  padding: 11px;
+}
+
+#seriesSection .filter-option.active {
+  background: #B08968;
+  color: white;
+  border-color: #B08968;
+}
 </style>
 </head>
 
@@ -424,15 +452,19 @@ footer {
             onclick="toggleDrawer(false)">×</button>
   </div>
 
-  <div class="section-title">商品狀態</div>
-  <div id="statusFilters"></div>
+  <div class="section-title">商品分類</div>
 
-  <div class="section-title">商品系列</div>
+<div id="statusFilters"></div>
+
+<div id="seriesSection" style="display:none;">
+
+  <div class="section-title">
+    商品系列
+  </div>
+
   <div id="seriesFilters"></div>
 
-  <div class="section-title">商品類別</div>
-  <div id="typeFilters"></div>
-
+</div>
 </aside>
 
 <header>
@@ -613,47 +645,99 @@ function createFilters(containerId, options, selected, callback) {
 
 function renderFilters() {
 
-  createFilters(
-    "statusFilters",
-    {
-      all: "全部商品",
-      instock: "⚡ 現貨專區",
-      preorder: "🛍️ 預購開團",
-      soldout: "已售完"
-    },
-    currentStatus
-    ,
-    value => {
-      currentStatus = value;
-      updatePage();
-    }
-  );
+  function renderFilters() {
 
-  createFilters(
-    "seriesFilters",
-    {
+  const statusContainer =
+    document.getElementById("statusFilters");
+
+  statusContainer.innerHTML = "";
+
+  const statusOptions = {
+    all: "全部商品",
+    instock: "⚡ 現貨專區",
+    preorder: "🛍️ 預購開團"
+  };
+
+  Object.entries(statusOptions).forEach(([key, label]) => {
+
+    const button = document.createElement("button");
+
+    button.className = "filter-option";
+
+    if (currentStatus === key) {
+      button.classList.add("active");
+    }
+
+    button.textContent = label;
+
+    button.onclick = () => {
+
+      currentStatus = key;
+      currentSeries = "all";
+      currentType = "all";
+
+      renderFilters();
+      renderProducts();
+
+      // 保持側邊欄開啟
+    };
+
+    statusContainer.appendChild(button);
+
+  });
+
+  const seriesSection =
+    document.getElementById("seriesSection");
+
+  if (currentStatus === "all") {
+
+    seriesSection.style.display = "none";
+
+  } else {
+
+    seriesSection.style.display = "block";
+
+    const seriesContainer =
+      document.getElementById("seriesFilters");
+
+    seriesContainer.innerHTML = "";
+
+    const seriesOptions = {
       all: "全部系列",
-      ...SERIES
-    },
-    currentSeries,
-    value => {
-      currentSeries = value;
-      updatePage();
-    }
-  );
+      "selfridges-gold": "冬日金黃系列",
+      "jp-disney-white": "日本迪士尼白色冬季新品"
+    };
 
-  createFilters(
-    "typeFilters",
-    {
-      all: "全部類別",
-      ...TYPES
-    },
-    currentType,
-    value => {
-      currentType = value;
-      updatePage();
-    }
-  );
+    Object.entries(seriesOptions).forEach(([key, label]) => {
+
+      const button = document.createElement("button");
+
+      button.className = "filter-option";
+
+      if (currentSeries === key) {
+        button.classList.add("active");
+      }
+
+      button.textContent = label;
+
+      button.onclick = () => {
+
+        currentSeries = key;
+
+        renderFilters();
+        renderProducts();
+
+        // 點選系列後才關閉側邊欄
+        toggleDrawer(false);
+
+      };
+
+      seriesContainer.appendChild(button);
+
+    });
+
+  }
+
 }
 
 function updatePage() {
