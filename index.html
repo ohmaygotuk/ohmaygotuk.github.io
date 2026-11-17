@@ -78,7 +78,6 @@
       margin-bottom: 20px;
     }
 
-    /* 第一層：主分類按鈕 */
     .filter-bar {
       display: flex;
       justify-content: center;
@@ -103,7 +102,6 @@
       border-color: var(--text-main);
     }
 
-    /* 預購雙排子分類容器 */
     .preorder-filters-wrapper {
       display: none;
       flex-direction: column;
@@ -133,7 +131,6 @@
       margin-right: 2px;
     }
 
-    /* 第一排子按鈕樣式（主題系列 - 暖橘色系） */
     .sub-btn-series {
       padding: 5px 13px;
       border: 1px solid #e76f51;
@@ -150,7 +147,6 @@
       color: #fff;
     }
 
-    /* 第二排子按鈕樣式（商品類型 - 奶茶棕色系） */
     .sub-btn-type {
       padding: 5px 13px;
       border: 1px solid #b08968;
@@ -188,11 +184,12 @@
       flex-direction: column;
     }
 
+    /* 已修改為 133%（3:4 直式長方形比例） */
     .product-img-box {
       position: relative;
       width: 100%;
       padding-top: 133%;
-      background-color: #f0ece6;
+      background-color: #f7f4f0;
       overflow: hidden;
     }
 
@@ -214,6 +211,7 @@
       display: none;
     }
 
+    /* 已修改為 contain（完整顯示不裁切覆蓋） */
     .carousel-track img {
       width: 100%;
       height: 100%;
@@ -326,13 +324,18 @@
       display: block;
       width: 100%;
       text-align: center;
-      background-color: var(--line-green);
-      color: #fff;
+      background-color: #06c755;
+      color: #ffffff !important;
       text-decoration: none;
-      padding: 10px 0;
+      padding: 11px 0;
       border-radius: 8px;
       font-weight: 600;
       font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .line-btn:hover {
+      opacity: 0.9;
     }
 
     footer {
@@ -355,22 +358,18 @@
     <h1>oh.maygot_uk</h1>
     <p>英國選物代購 ｜ 現貨與預購商品目錄</p>
     <a class="header-line-link" href="https://line.me/R/ti/p/@029ieror" target="_blank">
-      ＋ 加入官方 LINE (@029ieror) 詢問
+      點選此處加入官方LINE(@029ieror)詢問
     </a>
   </header>
 
   <div class="sticky-nav">
-    <!-- 主分類按鈕 -->
     <div class="filter-bar">
       <button type="button" class="filter-btn active" onclick="filterMain('all', this)">全部商品</button>
       <button type="button" class="filter-btn" onclick="filterMain('instock', this)">⚡ 現貨專區</button>
       <button type="button" class="filter-btn" onclick="filterMain('preorder', this)">🛍️ 預購開團</button>
     </div>
 
-    <!-- 點選「預購開團」後展開的雙排分類按鈕 -->
     <div class="preorder-filters-wrapper" id="preorder-filters">
-      
-      <!-- 第一排：主題系列分類 -->
       <div class="sub-filter-row">
         <span class="row-label">系列：</span>
         <button type="button" class="sub-btn-series active" onclick="setSeries('all', this)">全部系列</button>
@@ -378,7 +377,6 @@
         <button type="button" class="sub-btn-series" onclick="setSeries('jp-disney-white', this)">日本迪士尼白色冬季新品-居家日用品</button>
       </div>
 
-      <!-- 第二排：商品類別分類（可自行修改或增加按鈕） -->
       <div class="sub-filter-row">
         <span class="row-label">類別：</span>
         <button type="button" class="sub-btn-type active" onclick="setType('all', this)">全部類別</button>
@@ -386,31 +384,21 @@
         <button type="button" class="sub-btn-type" onclick="setType('home', this)">居家日用品</button>
         <button type="button" class="sub-btn-type" onclick="setType('accessories', this)">包袋配件</button>
       </div>
-
     </div>
   </div>
 
   <div class="container">
     <div class="product-grid" id="product-list">
 
-      <!-- 商品 1：同時設定 data-series（系列）與 data-type（類別） -->
+      <!-- 商品 1 -->
       <div class="product-card" data-status="preorder" data-series="selfridges-gold" data-type="plush">
         <div class="product-img-box">
           <span class="badge preorder">預購開團</span>
           <div class="carousel-track">
             <img src="winnie_1.jpg" alt="Selfridges限定-金黃冬日維尼 1" onerror="this.src='https://placehold.co'">
             <img src="winnie_2.jpg" alt="Selfridges限定-金黃冬日維尼 2" onerror="this.src='https://placehold.co'">
-            <img src="winnie_3.jpg" alt="Selfridges限定-金黃冬日維尼 2" onerror="this.src='https://placehold.co'">
           </div>
         </div>
         <div class="product-info">
-          <div class="product-category-tag">#DisneyXSelfridge冬日金黃系列</div>
+          <div class="product-category-tag">#DisneyXSelfridge冬日金黃系列 ｜ #玩偶吊飾</div>
           <div class="product-title">Selfridges限定-金黃冬日維尼</div>
-          <div class="product-note">英國百貨限定款・預計到貨約2-3週</div>
-          <div class="product-price">NT$ 2,600</div>
-          <a class="line-btn" href="https://line.me/R/ti/p/@029ieror
-          </a>
-        </div>
-      </div>
-
-            
