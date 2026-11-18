@@ -372,15 +372,48 @@ document.getElementById("searchInput").addEventListener("input",renderProducts);
 renderFilters();renderProducts();
 /* 點擊商品圖片放大 */
 
-function openLightbox(src) {
+/* =========================
+   商品圖片放大與滑動功能
+========================= */
+
+/* 儲存目前商品的所有圖片 */
+let currentImages = [];
+let currentImageIndex = 0;
+
+
+/* 開啟圖片放大 */
+function openLightbox(src, clickedImage) {
   const lightbox = document.getElementById("imageLightbox");
   const image = document.getElementById("lightboxImage");
 
-  image.src = src;
+  /* 找出被點擊圖片所屬的商品卡片 */
+  const card = clickedImage.closest(".card");
+
+  /* 取得同一件商品的所有圖片 */
+  if (card) {
+    currentImages = Array.from(
+      card.querySelectorAll(".track img")
+    ).map(img => img.src);
+  } else {
+    currentImages = [src];
+  }
+
+  /* 找出目前點擊的是第幾張 */
+  currentImageIndex = currentImages.indexOf(src);
+
+  if (currentImageIndex === -1) {
+    currentImages = [src];
+    currentImageIndex = 0;
+  }
+
+  image.src = currentImages[currentImageIndex];
+
   lightbox.classList.add("open");
   document.body.style.overflow = "hidden";
 }
 
+
+/* 關閉圖片放大 */
 function closeLightbox() {
   const lightbox = document.getElementById("imageLightbox");
 
@@ -388,25 +421,129 @@ function closeLightbox() {
   document.body.style.overflow = "";
 }
 
-/* 自動偵測所有商品圖片 */
+
+/* 顯示目前圖片 */
+function showLightboxImage() {
+  const image = document.getElementById("lightboxImage");
+
+  if (currentImages.length === 0) return;
+
+  image.src = currentImages[currentImageIndex];
+}
+
+
+/* 下一張圖片 */
+function showNextImage() {
+  if (currentImages.length <= 1) return;
+
+  currentImageIndex =
+    (currentImageIndex + 1) % currentImages.length;
+
+  showLightboxImage();
+}
+
+
+/* 上一張圖片 */
+function showPreviousImage() {
+  if (currentImages.length <= 1) return;
+
+  currentImageIndex =
+    (currentImageIndex - 1 + currentImages.length)
+    % currentImages.length;
+
+  showLightboxImage();
+}
+
+
+/* =========================
+   點擊商品圖片放大
+========================= */
+
 document.addEventListener("click", function(event) {
   const image = event.target.closest(".track img");
 
   if (image) {
-    openLightbox(image.src);
+    openLightbox(image.src, image);
   }
 
+  /* 點擊背景關閉 */
   if (event.target.id === "imageLightbox") {
     closeLightbox();
   }
 });
 
-/* 按 ESC 關閉放大圖片 */
+
+/* =========================
+   電腦鍵盤控制
+========================= */
+
 document.addEventListener("keydown", function(event) {
+  const lightbox = document.getElementById("imageLightbox");
+
+  if (!lightbox.classList.contains("open")) return;
+
   if (event.key === "Escape") {
     closeLightbox();
   }
+
+  if (event.key === "ArrowRight") {
+    showNextImage();
+  }
+
+  if (event.key === "ArrowLeft") {
+    showPreviousImage();
+  }
 });
+
+
+/* =========================
+   手機左右滑動功能
+========================= */
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+const lightboxElement =
+  document.getElementById("imageLightbox");
+
+
+/* 手指開始觸碰 */
+lightboxElement.addEventListener("touchstart", function(event) {
+  touchStartX = event.changedTouches[0].screenX;
+  touchStartY = event.changedTouches[0].screenY;
+}, { passive: true });
+
+
+/* 手指離開螢幕 */
+lightboxElement.addEventListener("touchend", function(event) {
+
+  if (!lightboxElement.classList.contains("open")) return;
+
+  const touchEndX = event.changedTouches[0].screenX;
+  const touchEndY = event.changedTouches[0].screenY;
+
+  const diffX = touchStartX - touchEndX;
+  const diffY = touchStartY - touchEndY;
+
+  /* 避免上下滑動誤觸 */
+  if (
+    Math.abs(diffX) < 50 ||
+    Math.abs(diffX) <= Math.abs(diffY)
+  ) {
+    return;
+  }
+
+  /* 向左滑動 */
+  if (diffX > 0) {
+    showNextImage();
+  }
+
+  /* 向右滑動 */
+  if (diffX < 0) {
+    showPreviousImage();
+  }
+
+}, { passive: true });
 </script>
 </body>
 </html>
