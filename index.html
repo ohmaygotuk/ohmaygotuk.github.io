@@ -74,7 +74,7 @@ const PRODUCTS = [
     name: "Selfridges限定－金黃冬日維尼",
     price: 2600,
     status: "preorder",
-    series: "selfridges-gold",
+    series: "selfridges",
     type: "plush",
     note: "英國selfridges百貨限定款・預計到貨約4–5週",
     images: ["/images/disney/winnie_1.jpg", "/images/disney/winnie_2.jpg", "/images/disney/winnie_3.jpg"],
@@ -86,7 +86,7 @@ const PRODUCTS = [
     name: "Selfridges限定－金黃冬日小豬",
     price: 2500,
     status: "preorder",
-    series: "selfridges-gold",
+    series: "selfridges",
     type: "plush",
     note: "英國selfridges百貨限定款・預計到貨約4–5週",
     images: ["/images/disney/piglet_1.jpg", "/images/disney/piglet_2.jpg", "/images/disney/piglet_3.jpg"],
@@ -98,7 +98,7 @@ const PRODUCTS = [
     name: "Selfridges限定－金黃冬日跳跳虎",
     price: 2600,
     status: "preorder",
-    series: "selfridges-gold",
+    series: "selfridges",
     type: "plush",
     note: "英國selfridges百貨限定款・預計到貨約4–5週",
     images: ["/images/disney/tigger_1.jpg", "/images/disney/tigger_2.jpg", "/images/disney/tigger_3.jpg"],
@@ -110,7 +110,7 @@ const PRODUCTS = [
     name: "Selfridges限定－金黃冬日屹耳",
     price: 2600,
     status: "preorder",
-    series: "selfridges-gold",
+    series: "selfridges",
     type: "plush",
     note: "英國selfridges百貨限定款・預計到貨約4–5週",
     images: ["/images/disney/eeyore_1.jpg", "/images/disney/eeyore_2.jpg", "/images/disney/eeyore_3.jpg"],
@@ -147,7 +147,31 @@ const PRODUCTS = [
 ];
 const SHOP_URL = "https://myship.7-11.com.tw/general/detail/GM2611179788883";
 const LINE_URL = "https://line.me/R/ti/p/@029ieror";
-const SERIES = {"selfridges-gold":"冬日金黃系列","jp-disney-white":"日本迪士尼白色冬季新品","jellycat-retired":"Jellycat絕版收藏","jellycat-regular":"Jellycat常態販售","disney":"Disney 迪士尼","other":"其他選物"};
+const SERIES = {"selfridges":"英國Selfridges百貨限定","disney-store":"迪士尼商店-新品預購","jellycat-retired":"Jellycat絕版收藏","jellycat-regular":"Jellycat常態販售","disney":"Disney迪士尼","other":"其他選物"};
+ /* =========================
+   ⚡ 現貨專區分類
+========================= */
+
+const INSTOCK_SERIES = {
+  "jellycat-retired": "Jellycat 絕版珍藏",
+  "jellycat-regular": "Jellycat 常態販售",
+  "disney": "Disney迪士尼",
+  "selfridges": "英國Selfridges百貨限定",
+  "other": "其他選物"
+};
+
+
+/* =========================
+   🛍️ 預購開團分類
+========================= */
+
+const PREORDER_SERIES = {
+  "jellycat-retired": "Jellycat 絕版珍藏",
+  "jellycat-regular": "Jellycat 常態販售",
+  "selfridges":"英國Selfridges百貨限定",
+  "disney-store":"迪士尼商店-新品預購",
+  "other": "其他選物"
+}; 
 const STATUS = {instock:"現貨",preorder:"預購開團",soldout:"已售完"};
 let currentStatus = "all";
 let currentSeries = "all";
@@ -166,7 +190,20 @@ function renderFilters(){
     if(currentStatus===key){
       const sub=document.createElement("div");sub.className="sub";
       sub.appendChild(button("全部系列",currentSeries==="all",()=>selectSeries("all")));
-      for(const [series,name] of Object.entries(SERIES))sub.appendChild(button(name,currentSeries===series,()=>selectSeries(series)));
+const seriesList =
+  currentStatus === "instock"
+    ? INSTOCK_SERIES
+    : PREORDER_SERIES;
+
+for (const [series, name] of Object.entries(seriesList)) {
+  sub.appendChild(
+    button(
+      name,
+      currentSeries === series,
+      () => selectSeries(series)
+    )
+  );
+}
       root.appendChild(sub);
     }
   }
